@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = 'https://riddle-app-vimal26457915-0xllqh47.leapcell.dev';
+
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
