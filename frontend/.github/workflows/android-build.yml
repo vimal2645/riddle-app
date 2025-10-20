@@ -1,9 +1,10 @@
 name: Android Build
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - main
+      - "*"   # Triggers on all branches
 
 jobs:
   build:
@@ -23,7 +24,7 @@ jobs:
       - name: Build React app
         run: npm run build
 
-      - name: Setup JDK 17
+      - name: Install Java JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -42,7 +43,7 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
 
-      - name: Sync Capacitor project
+      - name: Sync Capacitor and Copy build files
         run: |
           npx cap sync android
           npx cap copy android
@@ -55,13 +56,10 @@ jobs:
         working-directory: ./android
 
       - name: List APK Files
-        run: |
-          echo "APK Files Found:"
-          find ./android/app/build/outputs/apk -name "*.apk"
-      
-      - name: Upload APK Artifact
+        run: find ./android/app/build/outputs/apk -name "*.apk"
+
+      - name: Upload APK Artifacts (all .apk files)
         uses: actions/upload-artifact@v4
         with:
           name: android-apks
-          path: |
-            ./android/app/build/outputs/apk/**/*.apk
+          path: ./android/app/build/outputs/apk/**/*.apk
